@@ -1,22 +1,18 @@
-def calculate_risk(processed_data: dict) -> dict:
-    """
-    Calculate a baseline STOCOMETER risk score
-    using blockchain activity and GoPlus indicators.
-
-    This is a rule-based baseline, not an ML model.
-    """
+def calculate_risk(
+    processed_data: dict,
+    anomaly_result: dict = None
+) -> dict:
 
     blockchain = processed_data["blockchain"]
     security = processed_data["security"]
-
     indicators = security["indicators"]
 
     score = 0
     reasons = []
 
-    # --------------------------------
-    # GoPlus security indicators
-    # --------------------------------
+    # -----------------------------------
+    # 1. SECURITY RULES
+    # -----------------------------------
 
     weights = {
         "cybercrime": 25,
@@ -31,7 +27,7 @@ def calculate_risk(processed_data: dict) -> dict:
         "fake_token": 15,
         "honeypot": 15,
         "gas_abuse": 10,
-        "malicious_mining": 15
+        "malicious_mining": 15,
     }
 
     reason_names = {
@@ -47,65 +43,116 @@ def calculate_risk(processed_data: dict) -> dict:
         "fake_token": "Fake token activity detected",
         "honeypot": "Honeypot-related activity detected",
         "gas_abuse": "Gas abuse detected",
-        "malicious_mining": "Malicious mining activity detected"
+        "malicious_mining": "Malicious mining activity detected",
     }
 
     for indicator, weight in weights.items():
 
         if str(indicators.get(indicator, "0")) == "1":
-            score += weight
-            reasons.append(reason_names[indicator])
 
-    # --------------------------------
-    # Basic blockchain activity signal
-    # --------------------------------
+            score += weight
+
+            reasons.append(
+                reason_names[indicator]
+            )
+
+    # -----------------------------------
+    # 2. BLOCKCHAIN BEHAVIOR RULES
+    # -----------------------------------
 
     transfer_count = blockchain["transfer_count"]
     unique_addresses = blockchain["unique_addresses"]
 
-    # High activity alone is NOT malicious.
-    # We only use it as a very small contextual signal.
     if transfer_count >= 1000:
+
         score += 5
+
         reasons.append(
             "High transaction activity observed in current scan"
         )
 
     if unique_addresses >= 200:
+
         score += 5
+
         reasons.append(
             "Large number of connected addresses observed"
         )
 
-    # --------------------------------
-    # Keep score within 0-100
-    # --------------------------------
+    # -----------------------------------
+    # 3. ML ANOMALY SIGNAL
+    # -----------------------------------
 
-    score = min(score, 100)
+    anomaly_contribution = 0
 
-    # --------------------------------
-    # Risk level
-    # --------------------------------
+    if anomaly_result:
+
+        anomaly_score = float(
+            anomaly_result.get(
+                "anomaly_score",
+                0
+            )
+        )
+
+        is_anomaly = anomaly_result.get(
+            "is_anomaly",
+            False
+        )
+
+        # Behavioral anomaly can contribute
+        # a maximum of 20 points.
+        anomaly_contribution = round(
+            anomaly_score * 0.20
+        )
+
+        score += anomaly_contribution
+
+        if is_anomaly:
+
+            reasons.append(
+                "Unusual behavioral pattern detected by "
+                "Isolation Forest"
+            )
+
+    # -----------------------------------
+    # 4. FINAL SCORE
+    # -----------------------------------
+
+    score = min(
+        round(score),
+        100
+    )
+
+    # -----------------------------------
+    # 5. RISK LEVEL
+    # -----------------------------------
 
     if score >= 70:
+
         risk_level = "HIGH"
+
     elif score >= 30:
+
         risk_level = "MEDIUM"
+
     else:
+
         risk_level = "LOW"
 
-    # --------------------------------
-    # Default explanation
-    # --------------------------------
+    # -----------------------------------
+    # 6. DEFAULT REASON
+    # -----------------------------------
 
     if not reasons:
+
         reasons.append(
-            "No major security indicators were detected "
-            "in the current analysis"
+            "No major security or behavioral risk indicators "
+            "were detected in the current analysis"
         )
 
     return {
         "risk_score": score,
         "risk_level": risk_level,
-        "reasons": reasons
+        "anomaly_contribution": anomaly_contribution,
+        "reasons": reasons,
     }

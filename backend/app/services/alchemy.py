@@ -46,15 +46,113 @@ def get_wallet_transfers(
     if network in {"ethereum", "polygon", "base"}:
         categories.append("internal")
 
+    # Split the maximum history between
+    # incoming and outgoing transfers.
+    direction_limit = max_transfers // 2
+
+    outgoing_transfers = fetch_asset_transfers(
+        alchemy_url=alchemy_url,
+        wallet_address=wallet_address,
+        categories=categories,
+        direction="outgoing",
+        max_transfers=direction_limit,
+        network=network,
+    )
+
+    incoming_transfers = fetch_asset_transfers(
+        alchemy_url=alchemy_url,
+        wallet_address=wallet_address,
+        categories=categories,
+        direction="incoming",
+        max_transfers=direction_limit,
+        network=network,
+    )
+
+    # Merge both directions.
+    combined_transfers = (
+        outgoing_transfers
+        + incoming_transfers
+    )
+
+    # Remove duplicate transactions.
+    unique_transfers = {}
+
+    for transfer in combined_transfers:
+
+        transaction_hash = transfer.get("hash")
+
+        if transaction_hash:
+            unique_transfers[transaction_hash] = transfer
+
+        else:
+            # Fallback for transfers without a hash.
+            fallback_key = (
+                transfer.get("from"),
+                transfer.get("to"),
+                transfer.get("blockNum"),
+                transfer.get("value"),
+                transfer.get("asset"),
+            )
+
+            unique_transfers[fallback_key] = transfer
+
+    final_transfers = list(
+        unique_transfers.values()
+    )
+
+    # Sort newest first when timestamps exist.
+    final_transfers.sort(
+        key=lambda transfer: (
+            transfer.get("metadata", {})
+            .get("blockTimestamp")
+            or ""
+        ),
+        reverse=True,
+    )
+
+    print(
+        f"Alchemy {network}: "
+        f"{len(outgoing_transfers)} outgoing + "
+        f"{len(incoming_transfers)} incoming = "
+        f"{len(final_transfers)} unique transfers"
+    )
+
+    return {
+        "transfers": final_transfers[:max_transfers]
+    }
+def fetch_asset_transfers(
+    alchemy_url: str,
+    wallet_address: str,
+    categories: list,
+    direction: str,
+    max_transfers: int,
+    network: str,
+):
+    """
+    Fetch either incoming or outgoing transfers
+    using Alchemy's asset transfer API.
+    """
+
+    if direction not in {"incoming", "outgoing"}:
+        raise ValueError(
+            "Direction must be 'incoming' or 'outgoing'."
+        )
+
     all_transfers = []
     page_key = None
+
+    address_field = (
+        "fromAddress"
+        if direction == "outgoing"
+        else "toAddress"
+    )
 
     while len(all_transfers) < max_transfers:
 
         params = {
             "fromBlock": "0x0",
             "toBlock": "latest",
-            "fromAddress": wallet_address,
+            address_field: wallet_address,
             "category": categories,
             "withMetadata": True,
             "excludeZeroValue": True,
@@ -76,25 +174,29 @@ def get_wallet_transfers(
             payload
         )
 
-        transfers = result.get("transfers", [])
+        transfers = result.get(
+            "transfers",
+            []
+        )
 
-        all_transfers.extend(transfers)
+        all_transfers.extend(
+            transfers
+        )
 
         print(
-            f"Alchemy {network}: "
+            f"Alchemy {network} "
+            f"{direction}: "
             f"fetched {len(all_transfers)} transfers"
         )
 
-        page_key = result.get("pageKey")
+        page_key = result.get(
+            "pageKey"
+        )
 
         if not page_key:
             break
 
-    return {
-        "transfers": all_transfers[:max_transfers]
-    }
-
-
+    return all_transfers[:max_transfers]
 def get_solana_transactions(
     wallet_address: str,
     max_transfers: int = 5000,

@@ -13,6 +13,14 @@ GOPLUS_ADDRESS_URL = (
 )
 
 
+CHAIN_IDS = {
+    "ethereum": "1",
+    "polygon": "137",
+    "arbitrum": "42161",
+    "base": "8453",
+}
+
+
 def get_access_token():
     """
     Get a GoPlus access token using App Key + App Secret.
@@ -53,10 +61,32 @@ def get_access_token():
     return access_token
 
 
-def check_wallet(wallet_address: str):
+def check_wallet(
+    wallet_address: str,
+    network: str = "ethereum"
+):
     """
-    Check an Ethereum wallet using GoPlus Address Security API.
+    Check an EVM wallet using the GoPlus Address Security API.
+
+    Supported networks:
+    - Ethereum
+    - Polygon
+    - Base
+    - Arbitrum
+
+    Solana is intentionally not handled here because this
+    GoPlus address-security flow is for EVM-compatible networks.
     """
+
+    network = network.lower().strip()
+
+    if network not in CHAIN_IDS:
+        raise ValueError(
+            f"GoPlus does not support wallet security lookup "
+            f"for network: {network}"
+        )
+
+    chain_id = CHAIN_IDS[network]
 
     access_token = get_access_token()
 
@@ -70,7 +100,7 @@ def check_wallet(wallet_address: str):
     response = requests.get(
         f"{GOPLUS_ADDRESS_URL}/{wallet_address}",
         params={
-            "chain_id": "1"
+            "chain_id": chain_id
         },
         headers={
             "Authorization": authorization_header

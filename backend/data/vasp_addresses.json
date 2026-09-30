@@ -1,0 +1,92 @@
+{
+  "addresses": [
+    {
+      "address": "0xb5d85cbf7cb3ee0d56b3bb207d5fc4b82f43f511",
+      "entity_name": "Coinbase",
+      "entity_type": "VASP",
+      "label": "Coinbase 44",
+      "network": "ethereum",
+      "category": "exchange",
+      "source": "Blockscan",
+      "source_url": "https://blockscan.com/address/0xb5d85cbf7cb3ee0d56b3bb207d5fc4b82f43f511",
+      "confidence": "high"
+    },
+    {
+      "address": "0xa9d1e08c7793af67e9d92fe308d5697fb81d3e43",
+      "entity_name": "Coinbase",
+      "entity_type": "VASP",
+      "label": "Coinbase 10",
+      "network": "ethereum",
+      "category": "exchange",
+      "source": "Blockscan",
+      "source_url": "https://blockscan.com/address/0xa9d1e08c7793af67e9d92fe308d5697fb81d3e43",
+      "confidence": "high"
+    },
+    {
+      "address": "0x20fe51a9229eef2cf8ad9e89d91cab9312cf3b7a",
+      "entity_name": "Coinbase",
+      "entity_type": "VASP",
+      "label": "Coinbase 14",
+      "network": "base",
+      "category": "exchange",
+      "source": "Blockscan",
+      "source_url": "https://blockscan.com/address/0x20fe51a9229eef2cf8ad9e89d91cab9312cf3b7a",
+      "confidence": "high"
+    },
+    {
+      "address": "0xe7804c37c13166ff0b37f5ae0bb07a3aebb6e245",
+      "entity_name": "Binance",
+      "entity_type": "VASP",
+      "label": "Binance 48",
+      "network": "polygon",
+      "category": "exchange",
+      "source": "Blockscan",
+      "source_url": "https://blockscan.com/address/0xe7804c37c13166ff0b37f5ae0bb07a3aebb6e245",
+      "confidence": "high"
+    },
+    {
+      "address": "0xf977814e90da44bfa03b6295a0616a897441acec",
+      "entity_name": "Binance",
+      "entity_type": "VASP",
+      "label": "Binance Hot Wallet 20",
+      "network": "ethereum",
+      "category": "exchange",
+      "source": "Blockscan",
+      "source_url": "https://blockscan.com/address/0xf977814e90da44bfa03b6295a0616a897441acec",
+      "confidence": "high"
+    },
+    {
+    "address": "0x05e3a758fdd29d28435019ac453297ea37b61b62",
+    "entity_name": "Coinbase",
+    "entity_type": "VASP",
+    "label": "Coinbase 20",
+    "network": "arbitrum",
+    "category": "exchange",
+    "source": "Arbiscan",
+    "source_url": "https://arbiscan.io/accounts/label/exchange",
+    "confidence": "high"
+    },
+    {
+    "address": "GJRs4FwHtemZ5ZE9x3FNvJ8TMwitKTh21yxdRPqn7npE",
+    "entity_name": "Coinbase",
+    "entity_type": "VASP",
+    "label": "Coinbase Hot Wallet 2",
+    "network": "solana",
+    "category": "exchange",
+    "source": "Solscan",
+    "source_url": "https://solscan.io/account/GJRs4FwHtemZ5ZE9x3FNvJ8TMwitKTh21yxdRPqn7npE",
+    "confidence": "high"
+    },
+    {
+    "address": "FpwQQhQQoEaVu3WU2qZMfF1hx48YyfwsLoRgXG83E99Q",
+    "entity_name": "Coinbase",
+    "entity_type": "VASP",
+    "label": "Coinbase Hot Wallet 1",
+    "network": "solana",
+    "category": "exchange",
+    "source": "Solscan",
+    "source_url": "https://solscan.io/account/FpwQQhQQoEaVu3WU2qZMfF1hx48YyfwsLoRgXG83E99Q",
+    "confidence": "high"
+    }
+    ]
+  }
