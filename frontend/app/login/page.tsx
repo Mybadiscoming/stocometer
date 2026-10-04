@@ -1,7 +1,54 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import Link from "next/link";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
+function GoogleIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M21.35 12.23c0-.79-.07-1.55-.23-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.7 2.91-4.2 2.91-7.42Z"
+        fill="#4285F4"
+      />
+      <path
+        d="M12 21.5c2.63 0 4.84-.87 6.45-2.35l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.54 0-4.69-1.72-5.46-4.03H3.3v2.53A9.74 9.74 0 0 0 12 21.5Z"
+        fill="#34A853"
+      />
+      <path
+        d="M6.54 13.59A5.86 5.86 0 0 1 6.23 12c0-.55.11-1.08.31-1.59V7.88H3.3A9.5 9.5 0 0 0 2.25 12c0 1.53.37 2.97 1.05 4.12l3.24-2.53Z"
+        fill="#FBBC05"
+      />
+      <path
+        d="M12 6.38c1.43 0 2.71.49 3.72 1.46l2.79-2.79C16.84 3.48 14.63 2.5 12 2.5a9.74 9.74 0 0 0-8.7 5.38l3.24 2.53C7.31 8.1 9.46 6.38 12 6.38Z"
+        fill="#EA4335"
+      />
+    </svg>
+  );
+}
+
+function ArrowIcon() {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      aria-hidden="true"
+    >
+      <path d="M5 12h13" />
+      <path d="m13 6 6 6-6 6" />
+    </svg>
+  );
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -9,237 +56,195 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("stocometer-theme");
+
+    document.documentElement.classList.toggle(
+      "light",
+      savedTheme === "light"
+    );
+  }, []);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    // Demo authentication flow
+    // Demo authentication flow.
     router.push("/");
   }
 
+  function continueAsGuest() {
+    router.push("/analyze");
+  }
+
   return (
-    <main className="login-page">
-      <style jsx>{`
-        .login-page {
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 30px;
-          background:
-            radial-gradient(
-              circle at 50% 35%,
-              rgba(34, 211, 238, 0.08),
-              transparent 30%
-            ),
-            var(--background);
-          color: var(--foreground);
-          font-family:
-            Inter,
-            ui-sans-serif,
-            system-ui,
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            sans-serif;
-        }
-
-        .wrapper {
-          width: 100%;
-          max-width: 440px;
-        }
-
-        .brand {
-          text-align: center;
-          margin-bottom: 28px;
-        }
-
-        .logo {
-          width: 48px;
-          height: 48px;
-          margin: 0 auto 15px;
-          display: grid;
-          place-items: center;
-          border: 1px solid rgba(34, 211, 238, 0.5);
-          background: rgba(34, 211, 238, 0.08);
-          color: var(--cyan);
-          font: 700 14px monospace;
-          box-shadow: 0 0 30px rgba(34, 211, 238, 0.1);
-        }
-
-        .brand-name {
-          font-size: 22px;
-          font-weight: 800;
-          letter-spacing: -0.04em;
-        }
-
-        .brand-subtitle {
-          margin-top: 7px;
-          color: #64748b;
-          font: 10px monospace;
-          letter-spacing: 0.12em;
-        }
-
-        .card {
-          padding: 36px;
-          border: 1px solid #202c3c;
-          background: rgba(16, 22, 33, 0.88);
-          box-shadow:
-            0 30px 80px rgba(0, 0, 0, 0.35),
-            inset 0 1px 0 rgba(255, 255, 255, 0.02);
-        }
-
-        .heading {
-          margin: 0;
-          font-size: 27px;
-          letter-spacing: -0.04em;
-        }
-
-        .description {
-          margin: 9px 0 28px;
-          color: #64748b;
-          font-size: 13px;
-          line-height: 1.6;
-        }
-
-        .field {
-          margin-bottom: 19px;
-        }
-
-        .label {
-          display: block;
-          margin-bottom: 8px;
-          color: var(--muted);
-          font: 10px monospace;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-        }
-
-        .input {
-          width: 100%;
-          padding: 13px 14px;
-          border: 1px solid #263445;
-          outline: none;
-          background: var(--background);
-          color: var(--foreground);
-          font-size: 14px;
-          transition: 0.2s ease;
-        }
-
-        .input::placeholder {
-          color: #475569;
-        }
-
-        .input:focus {
-          border-color: rgba(34, 211, 238, 0.65);
-          box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.06);
-        }
-
-        .button {
-          width: 100%;
-          margin-top: 8px;
-          padding: 14px;
-          border: 1px solid var(--cyan);
-          background: var(--cyan);
-          color: #061016;
-          cursor: pointer;
-          font-size: 12px;
-          font-weight: 800;
-          letter-spacing: 0.05em;
-          transition: 0.25s ease;
-        }
-
-        .button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 35px rgba(34, 211, 238, 0.18);
-        }
-
-        .security {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 7px;
-          margin-top: 22px;
-          color: #475569;
-          font: 9px monospace;
-          letter-spacing: 0.08em;
-        }
-
-        .dot {
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background: #22c55e;
-          box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
-        }
-
-        @media (max-width: 500px) {
-          .login-page {
-            padding: 18px;
-          }
-
-          .card {
-            padding: 27px 22px;
-          }
-        }
-      `}</style>
-
-      <div className="wrapper">
-        <div className="brand">
-          <div className="logo">SC</div>
-          <div className="brand-name">STOCOMETER</div>
-          <div className="brand-subtitle">
-            BLOCKCHAIN RISK INTELLIGENCE
-          </div>
-        </div>
-
-        <div className="card">
-          <h1 className="heading">Welcome back</h1>
-
-          <p className="description">
-            Sign in to continue to your STOCOMETER workspace.
-          </p>
-
-          <form onSubmit={handleSubmit}>
-            <div className="field">
-              <label className="label" htmlFor="email">
-                Email
-              </label>
-
-              <input
-                id="email"
-                className="input"
-                type="text"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                required
-              />
+    <main className="theme-background theme-text min-h-screen">
+      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-5 py-6 sm:px-8">
+        {/* Top bar */}
+        <header className="flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3">
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-lg border text-xs font-bold"
+              style={{
+                borderColor: "var(--border)",
+                background: "var(--surface)",
+                color: "var(--cyan)",
+              }}
+            >
+              SC
             </div>
 
-            <div className="field">
-              <label className="label" htmlFor="password">
-                Password
-              </label>
+            <span className="text-sm font-semibold tracking-[0.08em]">
+              STOCOMETER
+            </span>
+          </Link>
 
-              <input
-                id="password"
-                className="input"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-              />
+          <Link
+            href="/"
+            className="text-sm theme-muted hover:theme-text"
+          >
+            Back to home
+          </Link>
+        </header>
+
+        {/* Login area */}
+        <div className="flex flex-1 items-center justify-center py-12">
+          <div className="w-full max-w-[430px]">
+            {/* Brand intro */}
+            <div className="mb-8 text-center">
+              <div
+                className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border text-sm font-bold"
+                style={{
+                  borderColor: "var(--border)",
+                  background: "var(--surface)",
+                  color: "var(--cyan)",
+                }}
+              >
+                SC
+              </div>
+
+              <p
+                className="mt-5 text-xs font-semibold uppercase tracking-[0.18em]"
+                style={{ color: "var(--cyan)" }}
+              >
+                Blockchain risk intelligence
+              </p>
+
+              <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
+                Welcome to STOCOMETER
+              </h1>
+
+              <p className="mx-auto mt-4 max-w-sm text-sm leading-6 theme-muted">
+                Sign in to continue to your investigation workspace.
+              </p>
             </div>
 
-            <button className="button" type="submit">
-              SIGN IN →
-            </button>
-          </form>
+            {/* Card */}
+            <div className="theme-surface rounded-3xl border theme-border p-6 sm:p-8">
+              {/* Google */}
+              <button
+                type="button"
+                onClick={() => router.push("/")}
+                className="flex w-full items-center justify-center gap-3 rounded-xl border theme-border theme-text px-4 py-3 text-sm font-medium hover:theme-surface-2"
+              >
+                <GoogleIcon />
+                Continue with Google
+              </button>
 
-          <div className="security">
-            <span className="dot" />
-            SECURE ACCESS
+              {/* Divider */}
+              <div className="my-6 flex items-center gap-4">
+                <div className="h-px flex-1 theme-border border-t" />
+
+                <span className="text-[11px] uppercase tracking-[0.14em] theme-muted">
+                  or
+                </span>
+
+                <div className="h-px flex-1 theme-border border-t" />
+              </div>
+
+              {/* Email / password */}
+              <form onSubmit={handleSubmit}>
+                <div className="mb-5">
+                  <label
+                    htmlFor="email"
+                    className="mb-2 block text-xs font-medium theme-muted"
+                  >
+                    Email
+                  </label>
+
+                  <input
+                    id="email"
+                    className="theme-background theme-text w-full rounded-xl border theme-border px-4 py-3 text-sm outline-none transition focus:border-[var(--cyan)]"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="mb-6">
+                  <div className="mb-2 flex items-center justify-between">
+                    <label
+                      htmlFor="password"
+                      className="block text-xs font-medium theme-muted"
+                    >
+                      Password
+                    </label>
+
+                    <button
+                      type="button"
+                      className="text-xs theme-muted hover:theme-text"
+                      onClick={() => {}}
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+
+                  <input
+                    id="password"
+                    className="theme-background theme-text w-full rounded-xl border theme-border px-4 py-3 text-sm outline-none transition focus:border-[var(--cyan)]"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold"
+                  style={{
+                    background: "var(--foreground)",
+                    color: "var(--background)",
+                  }}
+                >
+                  Sign in
+                  <ArrowIcon />
+                </button>
+              </form>
+
+              {/* Guest */}
+              <div className="mt-5">
+                <button
+                  type="button"
+                  onClick={continueAsGuest}
+                  className="w-full rounded-xl border theme-border theme-surface-2 px-4 py-3 text-sm font-medium theme-text hover:theme-surface"
+                >
+                  Continue as guest
+                </button>
+              </div>
+
+              <p className="mt-6 text-center text-[11px] leading-5 theme-muted">
+                Demo authentication is currently enabled for STOCOMETER.
+              </p>
+            </div>
+
+            {/* Footer note */}
+            <p className="mt-6 text-center text-xs theme-muted">
+              By continuing, you are entering the STOCOMETER investigation
+              workspace.
+            </p>
           </div>
         </div>
       </div>
