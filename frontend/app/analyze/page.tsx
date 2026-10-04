@@ -102,11 +102,20 @@ type EvidenceChain = {
   value_ratio?: number;
 };
 
+type VaspEntity = {
+  name?: string | null;
+  type?: string | null;
+  label?: string | null;
+  address?: string | null;
+  network?: string | null;
+  category?: string | null;
+};
+
 type Vasp = {
   address?: string;
   attribution?: {
     identified?: boolean;
-    entity?: string | null;
+    entity?: VaspEntity | null;
     method?: string;
     confidence?: number | string | null;
     evidence?: string | null;
@@ -1929,7 +1938,9 @@ function VaspCard({
   identified?: boolean;
 }) {
   const entity =
-    vasp.attribution?.entity || "Known VASP";
+  vasp.attribution?.entity?.name ||
+  vasp.attribution?.entity?.label ||
+  "Known VASP";
 
   return (
     <div className="theme-surface-2 rounded-2xl border theme-border p-5">
